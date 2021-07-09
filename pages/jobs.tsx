@@ -4,10 +4,12 @@ import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import { GetStaticProps } from 'next'
 import { Job, fetchJobs } from '../src/helpers'
+import { useRouter } from 'next/router'
 
 // https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation
 
-export default function Sample({ jobs }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Sample(props: InferGetStaticPropsType<typeof getStaticProps>) {
+  const { locale } = useRouter();
   return (
     <div className={styles.container}>
       <Head>
@@ -19,10 +21,10 @@ export default function Sample({ jobs }: InferGetStaticPropsType<typeof getStati
       <main className={styles.main}>
       <h1>SSG page</h1>
         <ul>
-          {jobs.map((job: Job) => {
+          {props.jobs.map((job: Job) => {
             return (
               <li key={job.id}>
-                <a href={job.url}>{job.title}</a>
+                <Link href={`/${locale}/jobs/${job.id}`} locale={false}>{job.title}</Link>
               </li>
             );
           })}
@@ -50,7 +52,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
   }
 
-  const jobs: Job[] = data.results.map((result: any) => {
+  const jobs: Job[] = data.results.map((result: Job) => {
     return {
       id: result.id,
       title: result.title,

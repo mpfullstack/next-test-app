@@ -42,7 +42,7 @@ export default function Sample({ jobs }: InferGetStaticPropsType<typeof getStati
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const data = await fetchJobs({ page: 6 });
+  const data = await fetchJobs(undefined, { page: 6 });
 
   if (!data) {
     return {
@@ -54,7 +54,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return {
       id: result.id,
       title: result.title,
-      url: result.url
+      url: result.url,
+      slug: result.slug
     }
   })
 

@@ -55,7 +55,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       id: result.id,
       title: result.title,
-      url: result.url
+      url: result.url,
+      slug: result.slug,
     }
   })
 

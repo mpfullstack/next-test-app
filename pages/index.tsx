@@ -26,6 +26,9 @@ export default function Home() {
         <p className={styles.description}>
           <Link href="/sample_ssr">Go to Sample Server Side Renderder page</Link>
         </p>
+        <p className={styles.description}>
+          <Link href="/jobs">Go to Jobs page with SSG</Link>
+        </p>
       </main>
 
       <footer className={styles.footer}>
