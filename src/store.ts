@@ -20,10 +20,9 @@ export type ReduxAction =
 const reducer: Reducer<GlobalState, ReduxAction> = (state = initialState, action) => {
   switch (action.type) {
     case HYDRATE:
-      debugger;
       const nextState = {
         ...state, // use previous state
-        ...action.payload.common, // apply delta from hydration
+        ...action.payload, // apply delta from hydration
       };
       return nextState;
     default:
