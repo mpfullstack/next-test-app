@@ -8,7 +8,7 @@ type Filters = {
 
 export async function fetchJobs(apiUrl?: string, filters?: Filters): Promise<Result> {
   const { page }: Filters = filters || { page: 1 };
-  let api = `${process.env.HOSCO_API_URL}/api/1.13/jobs/search`;
+  let api = `${process.env.HOSCO_API_URL}/jobs/search`;
   if (apiUrl) {
     api = apiUrl;
   }
