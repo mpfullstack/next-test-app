@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 
 export default function Sample(props: InferGetStaticPropsType<typeof getStaticProps>) {
   const { locale } = useRouter();
+  console.log("jobs props component", props);
   return (
     <div className={styles.container}>
       <Head>
