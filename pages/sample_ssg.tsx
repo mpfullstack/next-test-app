@@ -1,13 +1,20 @@
-import { InferGetStaticPropsType } from 'next'
+import { InferGetStaticPropsType, GetStaticPropsContext } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.css'
 import { GetStaticProps } from 'next'
 import { Job, fetchJobs } from '../src/helpers'
+import { wrapper, goToPage } from '../src/store'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 
 // https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation
 
 export default function Sample({ jobs }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -33,6 +40,20 @@ export default function Sample({ jobs }: InferGetStaticPropsType<typeof getStati
         <p className={styles.description}>
           <Link href="/sample_ssr">Go to Sample Server Side Renderder page</Link>
         </p>
+        <p>
+          <button type="button" onClick={
+            (e: React.MouseEvent) => {
+              dispatch(goToPage(2));
+              router.push('/sample_ssg?page=2', undefined, { shallow: true });
+              e.preventDefault();
+            }
+          }>
+            Go to page 2
+          </button>
+        </p>
+        <p className={styles.description}>
+          <Link href="/sample_ssg">Go to Sample SSG</Link>
+        </p>
       </main>
 
       <footer className={styles.footer}>
@@ -41,25 +62,28 @@ export default function Sample({ jobs }: InferGetStaticPropsType<typeof getStati
   )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const data = await fetchJobs();
+export const getStaticProps: GetStaticProps = wrapper.getStaticProps(
+  store => async (context: GetStaticPropsContext) => {
+    const { params, locale } = context;
+    const data = await fetchJobs();
 
-  if (!data) {
+    if (!data) {
+      return {
+        notFound: true,
+      }
+    }
+
+    const jobs: Job[] = data.results.map((result: any) => {
+      return {
+        id: result.id,
+        title: result.title,
+        url: result.url,
+        slug: result.slug
+      }
+    })
+
     return {
-      notFound: true,
+      props: { jobs }, // will be passed to the page component as props
     }
   }
-
-  const jobs: Job[] = data.results.map((result: any) => {
-    return {
-      id: result.id,
-      title: result.title,
-      url: result.url,
-      slug: result.slug
-    }
-  })
-
-  return {
-    props: { jobs }, // will be passed to the page component as props
-  }
-}
+);
